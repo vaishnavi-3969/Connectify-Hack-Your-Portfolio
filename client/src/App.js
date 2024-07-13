@@ -17,7 +17,7 @@ function App() {
     { path: "/feedback", element: <Feedback /> },
     { path: "/reviews", element: <Reviews /> },
     { path: "/login", element: <Login /> },
-    { path: "/projects", element:<Projects/>},
+    { path: "/projects", element:<Projects/>}, 
     { path: "/project-register", element:<ProjectForm/>},
   ];
   return (
