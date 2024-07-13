@@ -10,7 +10,7 @@ const Navbar = () => {
       <div className="px-4 mx-auto max-w-7xl">
         <div className="flex justify-between h-16">
           <div className="flex">
-            <Link to="/" className="flex items-center px-2 m-1 bg-mint-green text-dark-purple">
+            <Link to="/" className="flex items-center px-2 m-1 rounded-lg bg-mint-green text-dark-purple">
               <FaConnectdevelop className="mr-2 text-xl" />
               Connectify
             </Link>
