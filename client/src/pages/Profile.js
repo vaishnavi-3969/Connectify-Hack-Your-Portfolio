@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { useAuth } from "../contexts/authcontext";
-import { db } from "../firebase/firebase";
-import { collection, doc, setDoc, updateDoc } from "firebase/firestore";
+import { db, auth } from "../firebase/firebase";
+import { collection, doc, getDoc, setDoc, updateDoc } from "firebase/firestore";
 
 const Profile = () => {
   const userLoggedIn = useAuth();
@@ -12,6 +12,10 @@ const Profile = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [name, setName] = useState(userLoggedIn.currentUser.displayName);
   const [profileModal, setProfileModal] = useState(false);
+  const [links, setLinks] = useState({
+    linkedinProfile: "",
+    githubProfile: "",
+  });
 
   const toggleModal = () => {
     setIsModalOpen(!isModalOpen);
@@ -35,11 +39,22 @@ const Profile = () => {
     e.preventDefault();
     updateDoc(doc(collRef, "Profile"), {
       name,
+      links,
     });
     setName(name);
+    setLinks(links);
     toggleProfileModal();
   };
 
+  const fireUser = auth.currentUser;
+  console.log(fireUser);
+
+  const getUserdetails = async () => {
+    const docRef = doc(db, "profile", "GKtXJQnSpYYetOeYsPltbV4bbO73");
+    const docSnap = await getDoc(docRef);
+    console.log(docSnap.data());
+  };
+  getUserdetails();
   return (
     <div>
       {userLoggedIn ? (
@@ -63,6 +78,20 @@ const Profile = () => {
                   <h3 className="font-manrope font-bold text-4xl text-gray-900 mb-1 max-sm:text-center">
                     {name}
                   </h3>
+                  <div className="space-x-3">
+                    <a
+                      className="text-blue-600 underline"
+                      href={links.linkedinProfile}
+                    >
+                      Github
+                    </a>
+                    <a
+                      className="text-blue-600 underline"
+                      href={links.githubProfile}
+                    >
+                      LinkedIn
+                    </a>
+                  </div>
                 </div>
                 <button
                   onClick={toggleProfileModal}
@@ -106,6 +135,34 @@ const Profile = () => {
                           onChange={(e) => setName(e.target.value)}
                           placeholder="Enter Name"
                           className="w-full border border-gray-300 rounded-lg p-2 mb-4"
+                        />
+                        <input
+                          type="text"
+                          name="linkedinProfile"
+                          value={links.linkedinProfile}
+                          onChange={(e) =>
+                            setLinks({
+                              ...links,
+                              linkedinProfile: e.target.value,
+                            })
+                          }
+                          className="w-full border border-gray-300 rounded-lg p-2 mb-4"
+                          placeholder="LinkedIn profile"
+                          required
+                        />
+                        <input
+                          type="text"
+                          name="githubProfile"
+                          value={links.githubProfile}
+                          onChange={(e) =>
+                            setLinks({
+                              ...links,
+                              githubProfile: e.target.value,
+                            })
+                          }
+                          placeholder="Github profile"
+                          className="w-full border border-gray-300 rounded-lg p-2 mb-4"
+                          required
                         />
                         <button
                           type="submit"

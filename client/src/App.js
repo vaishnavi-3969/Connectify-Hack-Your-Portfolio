@@ -8,6 +8,7 @@ import Reviews from "./pages/Reviews";
 import Login from "./components/LoginInWithGithub.js";
 import Projects from "./pages/Projects.js";
 import ProjectForm from "./pages/ProjectForm.js";
+import Mentors from "./pages/Mentors.js"
 
 function App() {
   const routes = [
@@ -19,6 +20,7 @@ function App() {
     { path: "/login", element: <Login /> },
     { path: "/projects", element:<Projects/>}, 
     { path: "/project-register", element:<ProjectForm/>},
+    { path: "/mentors", element: <Mentors />},
   ];
   return (
     <div>
