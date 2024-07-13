@@ -6,6 +6,8 @@ import Profile from "./pages/Profile";
 import Feedback from "./pages/Feedback";
 import Reviews from "./pages/Reviews";
 import Login from "./components/LoginInWithGithub.js";
+import Projects from "./pages/Projects.js";
+import ProjectForm from "./pages/ProjectForm.js";
 import Mentors from "./pages/Mentors.js"
 
 function App() {
@@ -16,6 +18,8 @@ function App() {
     { path: "/feedback", element: <Feedback /> },
     { path: "/reviews", element: <Reviews /> },
     { path: "/login", element: <Login /> },
+    { path: "/projects", element:<Projects/>}, 
+    { path: "/project-register", element:<ProjectForm/>},
     { path: "/mentors", element: <Mentors />},
   ];
   return (
