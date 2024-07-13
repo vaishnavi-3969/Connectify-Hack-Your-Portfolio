@@ -26,7 +26,7 @@ const LogIn = () => {
     e.preventDefault();
     await doSignInWithGoogle();
     setIsSigningIn(true);
-    navigate("/profile");
+    navigate("/");
   };
 
   return (
@@ -82,7 +82,7 @@ const LogIn = () => {
             <div className="flex flex-col items-center m-2 ">
               <button
                 onClick={onGoogleSignIn}
-                className="px-4 py-2 border flex gap-2 border-slate-200 dark:border-slate-700 rounded-lg text-slate-700  hover:border-slate-400 dark:hover:border-slate-500 hover:text-slate-900 dark:hover:text-slate-300 hover:shadow transition duration-150"
+                className="flex gap-2 px-4 py-2 transition duration-150 border rounded-lg border-slate-200 dark:border-slate-700 text-slate-700 hover:border-slate-400 dark:hover:border-slate-500 hover:text-slate-900 dark:hover:text-slate-300 hover:shadow"
               >
                 <img
                   className="w-6 h-6"

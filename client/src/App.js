@@ -13,14 +13,14 @@ import ProjectDetails from "./pages/ProjectDetails.js";
 import Navbar from "./components/Navbar.js";
 import Footer from "./components/Footer.js";
 import { useAuth } from "./contexts/authcontext/index.js";
+import Events from "./pages/Events.js";
 
 function App() {
   const { currentUser } = useAuth();
 
   const routes = [
-    { path: "/", element: <Landing /> },
-    { path: "/home", element: <Home /> },
-    { path: "/profile", element: <Profile /> },
+    { path: "/", element: currentUser ? <Home /> : <Landing /> },
+    { path: "/profile", element: currentUser ? <Profile /> : null },
     { path: "/feedback", element: <Feedback /> },
     { path: "/reviews", element: <Reviews /> },
     { path: "/login", element: <Login /> },
@@ -28,6 +28,8 @@ function App() {
     { path: "/project-register", element: <ProjectForm /> },
     { path: "/mentors", element: <Mentors /> },
     { path: "/project/:projectId", element: <ProjectDetails /> },
+    { path: "/events", element: <Events /> },
+    { path: "*", element: currentUser ? <Home /> : <Landing /> },
   ];
   return (
     <div className="bg-mint-green">
