@@ -2,7 +2,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { FiHome, FiUser, FiClipboard, FiMessageCircle, FiCalendar } from 'react-icons/fi';
 import { GiPathDistance } from 'react-icons/gi';
-import { FaConnectdevelop } from 'react-icons/fa';
+import { FaConnectdevelop, FaNewspaper } from 'react-icons/fa';
 
 const Navbar = () => {
   return (
@@ -18,7 +18,7 @@ const Navbar = () => {
               <FiClipboard className="mr-2 text-xl" />
               Projects
             </Link>
-            <Link to="/mentorship" className="flex items-center px-2 ml-4">
+            <Link to="/mentors" className="flex items-center px-2 ml-4">
               <GiPathDistance className="mr-2 text-xl" />
               Mentorship
             </Link>
@@ -28,7 +28,11 @@ const Navbar = () => {
             </Link>
             <Link to="/events" className="flex items-center px-2 ml-4">
               <FiCalendar className="mr-2 text-xl" />
-              Events
+              Event
+            </Link>
+            <Link to="/tech-updated" className="flex items-center px-2 ml-4">
+              <FaNewspaper className="mr-2 text-xl" />
+              What's New
             </Link>
           </div>
           <div className="flex items-center">

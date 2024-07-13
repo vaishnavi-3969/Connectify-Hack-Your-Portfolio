@@ -11,6 +11,7 @@ import ProjectForm from "./pages/ProjectForm.js";
 import Mentors from "./pages/Mentors.js"
 import ProjectDetails from "./pages/ProjectDetails.js";
 import Navbar from "./components/Navbar.js";
+import Footer from "./components/Footer.js";
 
 function App() {
   const routes = [
@@ -39,6 +40,7 @@ function App() {
             />
           ))}
         </Routes>
+        <Footer/>
       </BrowserRouter>
     </div>
   );
