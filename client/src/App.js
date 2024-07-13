@@ -1,28 +1,35 @@
-import { BrowserRouter, Route, Routes } from 'react-router-dom';
-import './App.css';
-import Landing from './pages/Landing';
-import Home from './pages/Home';
-import Profile from './pages/Profile';
-import Feedback from './pages/Feedback';
-import Reviews from './pages/Reviews';
+import { BrowserRouter, Route, Routes } from "react-router-dom";
+import "./index.css";
+import Landing from "./pages/Landing";
+import Home from "./pages/Home";
+import Profile from "./pages/Profile";
+import Feedback from "./pages/Feedback";
+import Reviews from "./pages/Reviews";
+import Login from "./components/LoginInWithGithub.js";
 
 function App() {
   const routes = [
-    { path:"/", element:<Landing/> },
-    { path:"/home", element:<Home/> },
-    { path:"/profile", element:<Profile/> },
+    { path: "/", element: <Landing /> },
+    { path: "/home", element: <Home /> },
+    { path: "/profile", element: <Profile /> },
     { path: "/feedback", element: <Feedback /> },
     { path: "/reviews", element: <Reviews /> },
-  ]
+    { path: "/login", element: <Login /> },
+  ];
   return (
     <div>
-    <BrowserRouter>
-      <Routes>
-        {routes.map((route, index) => (
-          <Route key={index} path={route.path} element={route.element} exact/>
-        ))}
-      </Routes>
-    </BrowserRouter>
+      <BrowserRouter>
+        <Routes>
+          {routes.map((route, index) => (
+            <Route
+              key={index}
+              path={route.path}
+              element={route.element}
+              exact
+            />
+          ))}
+        </Routes>
+      </BrowserRouter>
     </div>
   );
 }
