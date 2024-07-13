@@ -1,12 +1,34 @@
+import { BrowserRouter, Route, Routes } from "react-router-dom";
 import "./App.css";
-import LogIn from "./components/LoginInWithGithub";
-import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
+import Landing from "./pages/Landing";
+import Home from "./pages/Home";
+import Profile from "./pages/Profile";
+import Feedback from "./pages/Feedback";
+import Reviews from "./pages/Reviews";
 
 function App() {
+  const routes = [
+    { path: "/", element: <Landing /> },
+    { path: "/home", element: <Home /> },
+    { path: "/profile", element: <Profile /> },
+    { path: "/feedback", element: <Feedback /> },
+    { path: "/reviews", element: <Reviews /> },
+  ];
   return (
-    <Routes>
-      <Route path="/" element={<LogIn />} />
-    </Routes>
+    <div>
+      <BrowserRouter>
+        <Routes>
+          {routes.map((route, index) => (
+            <Route
+              key={index}
+              path={route.path}
+              element={route.element}
+              exact
+            />
+          ))}
+        </Routes>
+      </BrowserRouter>
+    </div>
   );
 }
 
