@@ -152,12 +152,17 @@ const Mentors = () => {
                 </a>
               </li>
             </ul>
-            <div className="p-4 mx-8 mt-2 border-t">
+            <div className="flex p-4 mx-8 mt-2 border-t">
               <button
                 className="block w-full px-6 py-2 font-semibold text-white bg-gray-900 rounded-full hover:shadow-lg"
                 onClick={() => window.location.href = 'https://buy.stripe.com/test_cN27tyaiIddYfmgaEG'}
               >
                 Book Mentorship
+              </button>
+              <button
+                className="block w-full px-6 py-2 font-semibold text-white bg-gray-900 rounded-full hover:shadow-lg"
+              >
+                Chat
               </button>
             </div>
           </div>

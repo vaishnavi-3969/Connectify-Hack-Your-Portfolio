@@ -34,7 +34,6 @@ const Projects = () => {
   }, []);
 
   useEffect(() => {
-    // Fetch unique technologies from projects
     const fetchTechnologies = async () => {
       try {
         const querySnapshot = await getDocs(collection(db, 'projects'));
