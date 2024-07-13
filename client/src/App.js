@@ -12,8 +12,11 @@ import Mentors from "./pages/Mentors.js"
 import ProjectDetails from "./pages/ProjectDetails.js";
 import Navbar from "./components/Navbar.js";
 import Footer from "./components/Footer.js";
+import { useAuth } from "./contexts/authcontext/index.js";
 
 function App() {
+  const { currentUser } = useAuth();
+
   const routes = [
     { path: "/", element: <Landing /> },
     { path: "/home", element: <Home /> },
@@ -29,7 +32,7 @@ function App() {
   return (
     <div className="bg-mint-green">
       <BrowserRouter>
-      <Navbar/>
+        {currentUser && <Navbar />}
         <Routes>
           {routes.map((route, index) => (
             <Route
@@ -40,7 +43,7 @@ function App() {
             />
           ))}
         </Routes>
-        <Footer/>
+        <Footer />
       </BrowserRouter>
     </div>
   );
