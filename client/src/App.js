@@ -9,6 +9,7 @@ import Login from "./components/LoginInWithGithub.js";
 import Projects from "./pages/Projects.js";
 import ProjectForm from "./pages/ProjectForm.js";
 import Mentors from "./pages/Mentors.js"
+import ProjectDetails from "./pages/ProjectDetails.js";
 
 function App() {
   const routes = [
@@ -18,12 +19,13 @@ function App() {
     { path: "/feedback", element: <Feedback /> },
     { path: "/reviews", element: <Reviews /> },
     { path: "/login", element: <Login /> },
-    { path: "/projects", element:<Projects/>}, 
-    { path: "/project-register", element:<ProjectForm/>},
-    { path: "/mentors", element: <Mentors />},
+    { path: "/projects", element: <Projects /> },
+    { path: "/project-register", element: <ProjectForm /> },
+    { path: "/mentors", element: <Mentors /> },
+    { path: "/project/:projectId", element: <ProjectDetails /> },
   ];
   return (
-    <div>
+    <div className="bg-mint-green">
       <BrowserRouter>
         <Routes>
           {routes.map((route, index) => (
