@@ -4,6 +4,7 @@ import Landing from './pages/Landing';
 import Home from './pages/Home';
 import Profile from './pages/Profile';
 import Feedback from './pages/Feedback';
+import Reviews from './pages/Reviews';
 
 function App() {
   const routes = [
@@ -11,6 +12,7 @@ function App() {
     { path:"/home", element:<Home/> },
     { path:"/profile", element:<Profile/> },
     { path: "/feedback", element: <Feedback /> },
+    { path: "/reviews", element: <Reviews /> },
   ]
   return (
     <div>
