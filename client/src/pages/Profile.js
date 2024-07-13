@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useAuth } from "../contexts/authcontext";
 import { db, auth } from "../firebase/firebase";
 import { collection, doc, getDoc, setDoc, updateDoc } from "firebase/firestore";
@@ -7,18 +7,40 @@ import { useNavigate } from "react-router-dom";
 
 const Profile = () => {
   const userLoggedIn = useAuth();
-  console.log(userLoggedIn.currentUser);
   const collRef = collection(db, "profile");
   const navigate = useNavigate();
 
   const [techStack, setTechStack] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [name, setName] = useState(userLoggedIn?.currentUser?.displayName);
+  const [name, setName] = useState("");
   const [profileModal, setProfileModal] = useState(false);
   const [links, setLinks] = useState({
     linkedinProfile: "",
     githubProfile: "",
   });
+
+  useEffect(() => {
+    const fetchUserProfile = async () => {
+      const user = auth.currentUser;
+      if (user) {
+        const docRef = doc(db, "profile", user.uid);
+        const docSnap = await getDoc(docRef);
+        if (docSnap.exists()) {
+          const data = docSnap.data();
+          setName(data.name || "");
+          setTechStack(data.techStack || []);
+          setLinks({
+            linkedinProfile: data.linkedinProfile || "",
+            githubProfile: data.githubProfile || "",
+          });
+        } else {
+          console.log("No such document!");
+        }
+      }
+    };
+
+    fetchUserProfile();
+  }, [userLoggedIn]);
 
   const toggleModal = () => {
     setIsModalOpen(!isModalOpen);
@@ -28,40 +50,32 @@ const Profile = () => {
     setProfileModal(!profileModal);
   };
 
-  const handleAddTechStack = (e) => {
+  const handleAddTechStack = async (e) => {
     e.preventDefault();
     const tech = e.target.tech.value;
-    setTechStack([...techStack, tech]);
-    setDoc(doc(collRef, "TechStack"), {
-      techStack: [...techStack, tech],
-    });
+    const newTechStack = [...techStack, tech];
+    setTechStack(newTechStack);
+    await setDoc(doc(collRef, auth.currentUser.uid), {
+      techStack: newTechStack,
+    }, { merge: true });
     toggleModal();
   };
 
-  const handleUpdateProfile = (e) => {
+  const handleUpdateProfile = async (e) => {
     e.preventDefault();
-    updateDoc(doc(collRef, "Profile"), {
+    await updateDoc(doc(collRef, auth.currentUser.uid), {
       name,
-      links,
+      linkedinProfile: links.linkedinProfile,
+      githubProfile: links.githubProfile,
     });
-    setName(name);
-    setLinks(links);
     toggleProfileModal();
   };
 
-  const fireUser = auth.currentUser;
-  console.log(fireUser);
-
-  const getUserdetails = async () => {
-    const docRef = doc(db, "profile", "GKtXJQnSpYYetOeYsPltbV4bbO73");
-    const docSnap = await getDoc(docRef);
-    console.log(docSnap.data());
-  };
   const handleSignout = () => {
     doSignOut();
     navigate("/login");
   };
-  getUserdetails();
+
   return (
     <div>
       {userLoggedIn ? (
@@ -70,25 +84,25 @@ const Profile = () => {
             <img
               src="https://pagedone.io/asset/uploads/1705473908.png"
               alt="cover-image"
-              className="w-full absolute top-0 left-0 z-0 h-60"
+              className="absolute top-0 left-0 z-0 w-full h-60"
             />
-            <div className="w-full max-w-7xl mx-auto px-6 md:px-8">
-              <div className="flex items-center justify-center sm:justify-start relative z-10 mb-5">
+            <div className="w-full px-6 mx-auto max-w-7xl md:px-8">
+              <div className="relative z-10 flex items-center justify-center mb-5 sm:justify-start">
                 <img
                   src={userLoggedIn?.currentUser?.photoURL}
                   alt="user-avatar-image"
-                  className="border-4 border-solid border-white rounded-full"
+                  className="border-4 border-white border-solid rounded-full"
                 />
               </div>
-              <div className="flex items-center justify-center flex-col sm:flex-row max-sm:gap-5 sm:justify-between mb-5">
+              <div className="flex flex-col items-center justify-center mb-5 sm:flex-row max-sm:gap-5 sm:justify-between">
                 <div className="block">
-                  <h3 className="font-manrope font-bold text-4xl text-gray-900 mb-1 max-sm:text-center">
+                  <h3 className="mb-1 text-4xl font-bold text-gray-900 font-manrope max-sm:text-center">
                     {name}
                   </h3>
                   <div className="space-x-3">
                     <a
                       className="text-blue-600 underline"
-                      href={links?.linkedinProfile}
+                      href={links.linkedinProfile}
                       target="_blank"
                       rel="noreferrer"
                     >
@@ -96,7 +110,7 @@ const Profile = () => {
                     </a>
                     <a
                       className="text-blue-600 underline"
-                      href={links?.githubProfile}
+                      href={links.githubProfile}
                       target="_blank"
                       rel="noreferrer"
                     >
@@ -123,7 +137,7 @@ const Profile = () => {
                         strokeLinecap="round"
                       />
                     </svg>
-                    <span className="px-2 font-semibold text-base leading-7 text-white">
+                    <span className="px-2 text-base font-semibold leading-7 text-white">
                       Edit Profile
                     </span>
                   </button>
@@ -140,10 +154,10 @@ const Profile = () => {
                     onClick={toggleProfileModal}
                   >
                     <div
-                      className="bg-white rounded-lg shadow-lg p-6 w-full max-w-md mx-auto"
+                      className="w-full max-w-md p-6 mx-auto bg-white rounded-lg shadow-lg"
                       onClick={(e) => e.stopPropagation()}
                     >
-                      <h2 className="text-2xl font-semibold text-gray-900 mb-4">
+                      <h2 className="mb-4 text-2xl font-semibold text-gray-900">
                         Edit Profile
                       </h2>
                       <form onSubmit={handleUpdateProfile}>
@@ -153,7 +167,7 @@ const Profile = () => {
                           value={name}
                           onChange={(e) => setName(e.target.value)}
                           placeholder="Enter Name"
-                          className="w-full border border-gray-300 rounded-lg p-2 mb-4"
+                          className="w-full p-2 mb-4 border border-gray-300 rounded-lg"
                         />
                         <input
                           type="text"
@@ -165,7 +179,7 @@ const Profile = () => {
                               linkedinProfile: e.target.value,
                             })
                           }
-                          className="w-full border border-gray-300 rounded-lg p-2 mb-4"
+                          className="w-full p-2 mb-4 border border-gray-300 rounded-lg"
                           placeholder="LinkedIn profile"
                           required
                         />
@@ -180,12 +194,12 @@ const Profile = () => {
                             })
                           }
                           placeholder="Github profile"
-                          className="w-full border border-gray-300 rounded-lg p-2 mb-4"
+                          className="w-full p-2 mb-4 border border-gray-300 rounded-lg"
                           required
                         />
                         <button
                           type="submit"
-                          className="bg-indigo-600 text-white px-4 py-2 rounded-lg"
+                          className="px-4 py-2 text-white bg-indigo-600 rounded-lg"
                         >
                           Save Changes
                         </button>
@@ -194,18 +208,18 @@ const Profile = () => {
                   </div>
                 )}
               </div>
-              <div className="flex max-sm:flex-wrap max-sm:justify-center items-center gap-4">
+              <div className="flex items-center gap-4 max-sm:flex-wrap max-sm:justify-center">
                 {techStack.map((tech, index) => (
                   <button
                     key={index}
-                    className="rounded-full py-3 px-6 bg-stone-100 text-gray-700 font-semibold text-sm leading-6 transition-all duration-500 hover:bg-stone-200 hover:text-gray-900"
+                    className="px-6 py-3 text-sm font-semibold leading-6 text-gray-700 transition-all duration-500 rounded-full bg-stone-100 hover:bg-stone-200 hover:text-gray-900"
                   >
                     {tech}
                   </button>
                 ))}
                 <button
                   onClick={toggleModal}
-                  className="rounded-full py-3 px-6 bg-stone-100 text-gray-700 font-semibold text-sm leading-6 transition-all duration-500 hover:bg-stone-200 hover:text-gray-900"
+                  className="px-6 py-3 text-sm font-semibold leading-6 text-gray-700 transition-all duration-500 rounded-full bg-stone-100 hover:bg-stone-200 hover:text-gray-900"
                 >
                   +
                 </button>
@@ -215,10 +229,10 @@ const Profile = () => {
                     onClick={toggleModal}
                   >
                     <div
-                      className="bg-white rounded-lg shadow-lg p-6 w-full max-w-md mx-auto"
+                      className="w-full max-w-md p-6 mx-auto bg-white rounded-lg shadow-lg"
                       onClick={(e) => e.stopPropagation()}
                     >
-                      <h2 className="text-2xl font-semibold text-gray-900 mb-4">
+                      <h2 className="mb-4 text-2xl font-semibold text-gray-900">
                         Add Tech Stack
                       </h2>
                       <form onSubmit={handleAddTechStack}>
@@ -226,12 +240,12 @@ const Profile = () => {
                           type="text"
                           name="tech"
                           placeholder="Enter Tech Stack"
-                          className="w-full border border-gray-300 rounded-lg p-2 mb-4"
+                          className="w-full p-2 mb-4 border border-gray-300 rounded-lg"
                           required
                         />
                         <button
                           type="submit"
-                          className="bg-indigo-600 text-white px-4 py-2 rounded-lg"
+                          className="px-4 py-2 text-white bg-indigo-600 rounded-lg"
                         >
                           Add
                         </button>
