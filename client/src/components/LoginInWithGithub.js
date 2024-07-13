@@ -5,11 +5,9 @@ import {
   doSignInWithGoogle,
 } from "../firebase/auth";
 
-import { useAuth } from "../contexts/authcontext";
-import { Navigate, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 const LogIn = () => {
-  const userLoggedIn = useAuth();
   const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -26,15 +24,13 @@ const LogIn = () => {
 
   const onGoogleSignIn = async (e) => {
     e.preventDefault();
-    setIsSigningIn(true);
     await doSignInWithGoogle();
-    navigate("/");
-    alert("User logged in successfully");
+    setIsSigningIn(true);
+    navigate("/profile");
   };
 
   return (
     <div>
-      {userLoggedIn && <Navigate to={"/"} replace={true} />}
       <section class="text-gray-600 body-font relative">
         <div class="container px-5 py-24 mx-auto">
           <div class="flex flex-col text-center w-full">
