@@ -23,7 +23,7 @@ function App() {
     { path: "/mentors", element: <Mentors />},
   ];
   return (
-    <div className="bg-mint-green">
+    <div>
       <BrowserRouter>
         <Routes>
           {routes.map((route, index) => (
