@@ -14,6 +14,7 @@ import Navbar from "./components/Navbar.js";
 import Footer from "./components/Footer.js";
 import { useAuth } from "./contexts/authcontext/index.js";
 import Events from "./pages/Events.js";
+import News from "./pages/News.js";
 
 function App() {
   const { currentUser } = useAuth();
@@ -29,6 +30,7 @@ function App() {
     { path: "/mentors", element: <Mentors /> },
     { path: "/project/:projectId", element: <ProjectDetails /> },
     { path: "/events", element: <Events /> },
+    { path: "/tech-updated", element: <News /> },
     { path: "*", element: currentUser ? <Home /> : <Landing /> },
   ];
   return (
