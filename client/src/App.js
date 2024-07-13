@@ -10,6 +10,7 @@ import Projects from "./pages/Projects.js";
 import ProjectForm from "./pages/ProjectForm.js";
 import Mentors from "./pages/Mentors.js"
 import ProjectDetails from "./pages/ProjectDetails.js";
+import Navbar from "./components/Navbar.js";
 
 function App() {
   const routes = [
@@ -27,6 +28,7 @@ function App() {
   return (
     <div className="bg-mint-green">
       <BrowserRouter>
+      <Navbar/>
         <Routes>
           {routes.map((route, index) => (
             <Route
