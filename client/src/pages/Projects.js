@@ -88,7 +88,7 @@ const Projects = () => {
   return (
     <div className="max-w-4xl min-h-screen p-6 mx-auto">
       <h1 className="mb-6 text-3xl font-bold">Projects</h1>
-      <div className="flex items-center mb-4 space-x-4">
+      <div className="items-center mb-4 space-x-4 ">
         <div className="relative">
           <input
             type="text"
@@ -99,7 +99,7 @@ const Projects = () => {
           />
           <HiOutlineSearch className="absolute text-gray-500 top-3 right-3" />
         </div>
-        <div className="flex items-center space-x-2">
+        <div className="items-center space-x-2 ">
           <span className="text-gray-600">Filter by technology:</span>
           {loading ? (
             <span className="px-3 py-1 text-sm font-semibold text-gray-800 bg-gray-200 rounded-md">Loading...</span>
@@ -110,7 +110,7 @@ const Projects = () => {
                 onClick={() => handleFilterTechnology(tech)}
                 className={`btn-filter ${selectedTechnology === tech ? 'btn-active' : ''}`}
               >
-                {tech}
+                {tech} <div className='inline text-red-400'>|</div> 
               </button>
             ))
           )}
