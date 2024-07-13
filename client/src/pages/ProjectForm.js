@@ -1,137 +1,240 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
+import { useParams } from 'react-router-dom';
+import { doc, getDoc, updateDoc, arrayUnion, arrayRemove } from 'firebase/firestore';
 import { db } from '../firebase/firebase';
-import { collection, addDoc } from "firebase/firestore";
+import { Octokit } from '@octokit/rest';
 import { useAuth } from '../contexts/authcontext';
 
-const ProjectForm = () => {
+const ProjectDetails = () => {
+  const { projectId } = useParams();
   const { currentUser } = useAuth();
-  const [title, setTitle] = useState('');
-  const [description, setDescription] = useState('');
-  const [technologies, setTechnologies] = useState([]);
-  const [technologyInput, setTechnologyInput] = useState('');
-  const [githubLink, setGithubLink] = useState('');
-  const [projectInfo, setProjectInfo] = useState('');
+  const [project, setProject] = useState(null);
+  const [githubOverview, setGithubOverview] = useState(null);
+  const [owner, setOwner] = useState(null);
+  const [userLiked, setUserLiked] = useState(false);
+  const [interested, setInterested] = useState(false);
+  const [comments, setComments] = useState([]);
+  const [newComment, setNewComment] = useState('');
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+  useEffect(() => {
+    const fetchProject = async () => {
+      try {
+        const docRef = doc(db, 'projects', projectId);
+        const docSnap = await getDoc(docRef);
+
+        if (docSnap.exists()) {
+          setProject({ id: docSnap.id, ...docSnap.data() });
+        } else {
+          console.log('No such document!');
+        }
+      } catch (error) {
+        console.error('Error fetching project:', error);
+      }
+    };
+
+    fetchProject();
+  }, [projectId]);
+
+  useEffect(() => {
+    if (project?.githubLink) {
+      const fetchGithubOverview = async () => {
+        try {
+          const octokit = new Octokit();
+          const [owner, repo] = project.githubLink.split('/').slice(-2);
+
+          const { data } = await octokit.repos.get({ owner, repo });
+          setGithubOverview(data);
+
+          const ownerDetails = await octokit.users.getByUsername({ username: owner });
+          setOwner(ownerDetails.data);
+        } catch (error) {
+          console.error('Error fetching GitHub overview:', error);
+        }
+      };
+
+      fetchGithubOverview();
+    }
+  }, [project]);
+
+  useEffect(() => {
+    const userId = currentUser ? currentUser.uid : null;
+
+    if (project && project.likes && userId && project.likes.includes(userId)) {
+      setUserLiked(true);
+    } else {
+      setUserLiked(false);
+    }
+
+    if (project && project.interested && userId && project.interested.includes(userId)) {
+      setInterested(true);
+    } else {
+      setInterested(false);
+    }
+  }, [project, currentUser]);
+
+  useEffect(() => {
+    const fetchComments = async () => {
+      try {
+        const docRef = doc(db, 'projects', projectId);
+        const docSnap = await getDoc(docRef);
+
+        if (docSnap.exists()) {
+          const projectData = docSnap.data();
+          if (projectData.comments) {
+            setComments(projectData.comments);
+          }
+        } else {
+          console.log('No such document!');
+        }
+      } catch (error) {
+        console.error('Error fetching comments:', error);
+      }
+    };
+
+    fetchComments();
+  }, [projectId]);
+
+  const handleLikeProject = async () => {
+    const userId = currentUser ? currentUser.uid : null;
 
     try {
-      await addDoc(collection(db, "projects"), {
-        title,
-        description,
-        technologies,
-        githubLink,
-        projectInfo,
-        owner: currentUser.email,
-        likes: [],
-        comments: []
-      });
-      setTitle('');
-      setDescription('');
-      setTechnologies([]);
-      setGithubLink('');
-      setProjectInfo('');
-      alert('Project created successfully!');
+      const docRef = doc(db, 'projects', projectId);
+
+      if (!userLiked) {
+        await updateDoc(docRef, {
+          likes: arrayUnion(userId)
+        });
+      } else {
+        await updateDoc(docRef, {
+          likes: arrayRemove(userId)
+        });
+      }
+
+      setUserLiked(!userLiked);
     } catch (error) {
-      console.error("Error adding document: ", error);
+      console.error('Error updating likes:', error);
     }
   };
 
-  const addTechnology = () => {
-    if (technologyInput.trim() !== '') {
-      setTechnologies([...technologies, technologyInput.trim()]);
-      setTechnologyInput('');
+  const handleInterested = async () => {
+    const userId = currentUser ? currentUser.uid : null;
+
+    try {
+      const docRef = doc(db, 'projects', projectId);
+
+      if (!interested) {
+        await updateDoc(docRef, {
+          interested: arrayUnion(userId)
+        });
+      } else {
+        await updateDoc(docRef, {
+          interested: arrayRemove(userId)
+        });
+      }
+
+      setInterested(!interested);
+    } catch (error) {
+      console.error('Error updating interest:', error);
     }
   };
 
-  const removeTechnology = (index) => {
-    setTechnologies(technologies.filter((_, i) => i !== index));
+  const handleAddComment = async (e) => {
+    e.preventDefault();
+    const userId = currentUser ? currentUser.uid : null;
+    const userName = currentUser ? currentUser.displayName : 'Anonymous';
+
+    try {
+      const docRef = doc(db, 'projects', projectId);
+
+      await updateDoc(docRef, {
+        comments: arrayUnion({ userId, userName, text: newComment, timestamp: new Date().toISOString() })
+      });
+
+      setNewComment('');
+      setComments([...comments, { userId, userName, text: newComment, timestamp: new Date().toISOString() }]);
+    } catch (error) {
+      console.error('Error adding comment:', error);
+    }
   };
 
   return (
-    <div className="max-w-md p-6 mx-auto mt-10 rounded-md bg-dark-purple text-mint-green">
-      <h1 className="mb-6 text-2xl font-bold text-mint-green">Create New Project</h1>
-      <form onSubmit={handleSubmit} className="space-y-4">
-        <div>
-          <label className="block text-sm font-medium text-mint-green">Title</label>
-          <input
-            type="text"
-            className="block w-full p-2 mt-1 border rounded-md border-mint-green bg-dark-purple text-mint-green"
-            value={title}
-            onChange={(e) => setTitle(e.target.value)}
-            required
-          />
-        </div>
-        <div>
-          <label className="block text-sm font-medium text-mint-green">Description</label>
-          <textarea
-            className="block w-full p-2 mt-1 border rounded-md border-mint-green bg-dark-purple text-mint-green"
-            value={description}
-            onChange={(e) => setDescription(e.target.value)}
-            required
-          />
-        </div>
-        <div>
-          <label className="block text-sm font-medium text-mint-green">Technologies</label>
-          <div className="flex items-center mt-1">
-            <input
-              type="text"
-              className="flex-1 p-2 border rounded-md border-mint-green bg-dark-purple text-mint-green"
-              value={technologyInput}
-              onChange={(e) => setTechnologyInput(e.target.value)}
-              placeholder="Add a technology"
-            />
-            <button
-              type="button"
-              className="p-2 ml-2 text-white rounded-md bg-marian-blue hover:bg-light-blue"
-              onClick={addTechnology}
-            >
-              Add
-            </button>
-          </div>
-          <div className="flex flex-wrap mt-2 space-x-2">
-            {technologies.map((tech, index) => (
-              <span key={index} className="px-2 py-1 text-white rounded-md bg-federal-blue">
-                {tech}
-                <button
-                  type="button"
-                  className="ml-1 text-red-500"
-                  onClick={() => removeTechnology(index)}
-                >
-                  &times;
-                </button>
-              </span>
-            ))}
-          </div>
-        </div>
-        <div>
-          <label className="block text-sm font-medium text-mint-green">GitHub Link</label>
-          <input
-            type="url"
-            className="block w-full p-2 mt-1 border rounded-md border-mint-green bg-dark-purple text-mint-green"
-            value={githubLink}
-            onChange={(e) => setGithubLink(e.target.value)}
-            required
-          />
-        </div>
-        <div>
-          <label className="block text-sm font-medium text-mint-green">More Project Info</label>
-          <textarea
-            className="block w-full p-2 mt-1 border rounded-md border-mint-green bg-dark-purple text-mint-green"
-            value={projectInfo}
-            onChange={(e) => setProjectInfo(e.target.value)}
-            required
-          />
-        </div>
-        <button
-          type="submit"
-          className="w-full p-2 text-white rounded-md bg-marian-blue hover:bg-light-blue"
-        >
-          Create Project
-        </button>
-      </form>
+    <div className='min-h-screen'>
+      <div className="max-w-4xl p-6 mx-auto rounded-md bg-dark-purple">
+        {project ? (
+          <>
+            <h1 className="text-3xl font-bold text-mint-green">{project.title}</h1>
+            <p className="text-mint-green">{project.description}</p>
+            <p className="text-mint-green">Technologies: {project.technologies.join(', ')}</p>
+            {githubOverview && (
+              <div className="p-4 mt-4 rounded-md bg-mint-green">
+                <h2 className="text-xl font-bold">GitHub Overview</h2>
+                <p>Stars: {githubOverview.stargazers_count}</p>
+                <p>Forks: {githubOverview.forks_count}</p>
+                <p>Open Issues: {githubOverview.open_issues_count}</p>
+              </div>
+            )}
+            {owner && (
+              <div className="p-4 mt-4 rounded-md bg-mint-green">
+                <h2 className="text-xl font-bold">Owner Details</h2>
+                <p>Owner: {owner.login}</p>
+                <p>GitHub URL: <a href={owner.html_url} target="_blank" rel="noopener noreferrer">{owner.html_url}</a></p>
+                <p>Followers: {owner.followers}</p>
+                <p>Public Repos: {owner.public_repos}</p>
+              </div>
+            )}
+            <div className="mt-4">
+              <button
+                onClick={handleLikeProject}
+                className={`py-2 px-4 mr-4 rounded-md ${userLiked ? 'bg-blue-600' : 'bg-dark-purple'} text-white hover:bg-blue-700`}
+              >
+                {userLiked ? 'Liked' : 'Like'}
+              </button>
+              <button
+                onClick={handleInterested}
+                className={`py-2 px-4 rounded-md ${interested ? 'bg-blue-600' : 'bg-dark-purple'} text-white hover:bg-blue-700`}
+              >
+                {interested ? 'Not Interested' : 'Show Interest'}
+              </button>
+            </div>
+            <div className="mt-6">
+              <h2 className="text-xl font-bold text-mint-green">Comments</h2>
+              {comments.length > 0 ? (
+                <ul className="mt-4">
+                  {comments.map((comment, index) => (
+                    <li key={index} className="mb-2">
+                      <p className="text-white">{comment.text}</p>
+                      <p className="text-sm text-gray-400">{comment.userName}</p>
+                    </li>
+                  ))}
+                </ul>
+              ) : (
+                <p className="text-white">No comments yet.</p>
+              )}
+              {currentUser && (
+                <form onSubmit={handleAddComment} className="mt-4">
+                  <textarea
+                    value={newComment}
+                    onChange={(e) => setNewComment(e.target.value)}
+                    placeholder="Add a comment..."
+                    className="w-full px-3 py-2 text-white bg-gray-800 rounded-md focus:outline-none"
+                    rows="3"
+                  />
+                  <button
+                    type="submit"
+                    className="px-4 py-2 mt-2 text-white rounded-md bg-dark-purple hover:bg-blue-700"
+                  >
+                    Add Comment
+                  </button>
+                </form>
+              )}
+            </div>
+          </>
+        ) : (
+          <p>Loading...</p>
+        )}
+      </div>
     </div>
   );
 };
 
-export default ProjectForm;
+export default ProjectDetails;
