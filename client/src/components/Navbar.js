@@ -2,7 +2,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { FiHome, FiUser, FiClipboard, FiMessageCircle, FiCalendar, FiFile } from 'react-icons/fi';
 import { GiPathDistance } from 'react-icons/gi';
-import { FaConnectdevelop, FaNewspaper } from 'react-icons/fa';
+import { FaConnectdevelop, FaNewspaper, FaUser } from 'react-icons/fa';
 
 const Navbar = () => {
   return (
@@ -34,14 +34,18 @@ const Navbar = () => {
               <FiFile className="mr-2 text-xl" />
               Resume Analysis
             </Link>
+            <Link to="/cover-letter" className="flex items-center px-2 ml-4">
+              <FiFile className="mr-2 text-xl" />
+              Cover Letter Generator
+            </Link>
             <Link to="/tech-updated" className="flex items-center px-2 ml-4">
               <FaNewspaper className="mr-2 text-xl" />
-              What's New
+              News
             </Link>
           </div>
           <div className="flex items-center">
-            <Link to="/profile" className="px-4 py-2 ml-4 bg-gray-800 rounded-md hover:bg-gray-700">
-              Profile
+            <Link to="/profile" className="px-4 py-2 ml-4 bg-gray-400 rounded-lg hover:bg-gray-700">
+              <FaUser/>
             </Link>
           </div>
         </div>
