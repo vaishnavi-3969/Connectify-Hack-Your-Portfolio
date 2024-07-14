@@ -55,19 +55,35 @@ const Profile = () => {
     const tech = e.target.tech.value;
     const newTechStack = [...techStack, tech];
     setTechStack(newTechStack);
-    await setDoc(doc(collRef, auth.currentUser.uid), {
-      techStack: newTechStack,
-    }, { merge: true });
+    await setDoc(
+      doc(collRef, auth.currentUser.uid),
+      {
+        techStack: newTechStack,
+      },
+      { merge: true }
+    );
     toggleModal();
   };
 
   const handleUpdateProfile = async (e) => {
     e.preventDefault();
-    await updateDoc(doc(collRef, auth.currentUser.uid), {
-      name,
-      linkedinProfile: links.linkedinProfile,
-      githubProfile: links.githubProfile,
-    });
+    const userDocRef = doc(collRef, auth.currentUser.uid);
+    const docSnap = await getDoc(userDocRef);
+
+    if (docSnap.exists()) {
+      await updateDoc(userDocRef, {
+        name,
+        linkedinProfile: links.linkedinProfile,
+        githubProfile: links.githubProfile,
+      });
+    } else {
+      await setDoc(userDocRef, {
+        name,
+        linkedinProfile: links.linkedinProfile,
+        githubProfile: links.githubProfile,
+      });
+    }
+
     toggleProfileModal();
   };
 

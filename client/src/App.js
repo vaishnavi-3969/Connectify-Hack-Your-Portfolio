@@ -8,13 +8,14 @@ import Reviews from "./pages/Reviews";
 import Login from "./components/LoginInWithGithub.js";
 import Projects from "./pages/Projects.js";
 import ProjectForm from "./pages/ProjectForm.js";
-import Mentors from "./pages/Mentors.js"
+import Mentors from "./pages/Mentors.js";
 import ProjectDetails from "./pages/ProjectDetails.js";
 import Navbar from "./components/Navbar.js";
 import Footer from "./components/Footer.js";
 import { useAuth } from "./contexts/authcontext/index.js";
 import Events from "./pages/Events.js";
 import News from "./pages/News.js";
+import CoverLetterGenerator from "./components/CoverLetterGenerator.js";
 
 function App() {
   const { currentUser } = useAuth();
@@ -32,6 +33,10 @@ function App() {
     { path: "/events", element: <Events /> },
     { path: "/tech-updated", element: <News /> },
     { path: "*", element: currentUser ? <Home /> : <Landing /> },
+    {
+      path: "/cover-letter",
+      element: currentUser ? <CoverLetterGenerator /> : null,
+    },
   ];
   return (
     <div className="bg-mint-green">
