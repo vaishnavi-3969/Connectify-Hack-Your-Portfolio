@@ -34,10 +34,9 @@ const ResumeAnalyzer = () => {
 
       console.log('API Response:', response.data);
 
-      // Extracting text from the API response
       const parsedText = response.data.data.generated_summary_text;
       setResumeText(parsedText);
-      setResponseData(response.data); // Store full response data in state
+      setResponseData(response.data); 
     } catch (error) {
       console.error('Error analyzing resume:', error);
       alert('An error occurred while analyzing the resume. Please try again.');
