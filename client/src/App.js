@@ -39,19 +39,21 @@ function App() {
     },
   ];
   return (
-    <div className="bg-mint-green">
+    <div className="bg-mint-green min-h-screen flex flex-col">
       <BrowserRouter>
         {currentUser && <Navbar />}
-        <Routes>
-          {routes.map((route, index) => (
-            <Route
-              key={index}
-              path={route.path}
-              element={route.element}
-              exact
-            />
-          ))}
-        </Routes>
+        <div className="flex-grow">
+          <Routes>
+            {routes.map((route, index) => (
+              <Route
+                key={index}
+                path={route.path}
+                element={route.element}
+                exact
+              />
+            ))}
+          </Routes>
+        </div>
         <Footer />
       </BrowserRouter>
     </div>
