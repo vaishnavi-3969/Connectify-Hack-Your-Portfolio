@@ -1,10 +1,10 @@
 <div align='center'>
+  <a href="https://devpost.com/software/connectify-4eaqmc">Connectify</a>
   <img src="https://github.com/user-attachments/assets/7657b117-bb6b-4384-b1b2-8202e3210ff4" width='200px'/>
   <h2>Tools and Technologies used</h2>
      <img src="https://skillicons.dev/icons?i=github,git,react,tailwind,html,css,js,vscode,firebase,python,flask,npm"/>
 <p>
 </div>
-
 
 ## Problem Statement
 In today's fast-paced tech industry, networking and collaboration are crucial for professional growth and project success. However, existing platforms often lack cohesive features that integrate networking, project management, mentorship, and staying updated with the latest tech trends. This leads to fragmented user experiences, making it challenging for tech enthusiasts and professionals to efficiently connect, collaborate on projects, find mentors, and stay informed about relevant events and news.
