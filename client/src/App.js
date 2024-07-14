@@ -16,6 +16,7 @@ import { useAuth } from "./contexts/authcontext/index.js";
 import Events from "./pages/Events.js";
 import News from "./pages/News.js";
 import CoverLetterGenerator from "./components/CoverLetterGenerator.js";
+import ResumeAnalyzer from "./pages/ResumeAnalyzer.js";
 
 function App() {
   const { currentUser } = useAuth();
@@ -37,6 +38,7 @@ function App() {
       path: "/cover-letter",
       element: currentUser ? <CoverLetterGenerator /> : null,
     },
+    { path: '/resume-analyzer', element: <ResumeAnalyzer /> }
   ];
   return (
     <div className="bg-mint-green min-h-screen flex flex-col">
