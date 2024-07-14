@@ -1,5 +1,5 @@
 import google.generativeai as genai
-from flask import Flask,request
+from flask import Flask,request,jsonify
 from dotenv import load_dotenv
 from flask_cors import CORS
 import os
@@ -29,6 +29,15 @@ def myFormPost():
     cover_letter = str(response.text)          
     print("Data from frontend:", data)
     return cover_letter
+
+@app.route('/analyze-resume', methods=['POST'])
+def analyze_resume():
+    data = request.get_json()
+    print("Resume data: ",data)
+    text = (f"Here is my resume: {data}. Can you please give score on this resume and suggest the improvements required.")
+    response=model.generate_content(text)
+    print(response.text)
+    return response.text
 
 if __name__=='__main__':
     app.run(debug=True)
