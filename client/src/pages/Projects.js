@@ -5,6 +5,7 @@ import { collection, getDocs, where } from 'firebase/firestore';
 import { FiGithub } from 'react-icons/fi';
 import { AiOutlineHeart, AiFillHeart } from 'react-icons/ai';
 import { HiOutlineSearch } from 'react-icons/hi';
+import { FaPlus } from 'react-icons/fa';
 
 const Projects = () => {
   const [projects, setProjects] = useState([]);
@@ -88,6 +89,11 @@ const Projects = () => {
     <div className="max-w-4xl min-h-screen p-6 mx-auto">
       <h1 className="mb-6 text-3xl font-bold">Projects</h1>
       <div className="items-center mb-4 space-x-4 ">
+        <button className='p-3'>
+          <Link to="/project-register" className="px-4 py-2 text-white bg-dark-purple rounded hover:bg-marian-blue">
+            <FaPlus className='text-white inline' />Add Project
+          </Link>
+        </button>
         <div className="relative">
           <input
             type="text"
@@ -109,7 +115,7 @@ const Projects = () => {
                 onClick={() => handleFilterTechnology(tech)}
                 className={`btn-filter ${selectedTechnology === tech ? 'btn-active' : ''}`}
               >
-                {tech} <div className='inline text-red-400'>|</div> 
+                {tech} <div className='inline text-red-400'>|</div>
               </button>
             ))
           )}

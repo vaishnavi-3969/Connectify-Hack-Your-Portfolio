@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { FiHome, FiUser, FiClipboard, FiMessageCircle, FiCalendar } from 'react-icons/fi';
+import { FiHome, FiUser, FiClipboard, FiMessageCircle, FiCalendar, FiFile } from 'react-icons/fi';
 import { GiPathDistance } from 'react-icons/gi';
 import { FaConnectdevelop, FaNewspaper } from 'react-icons/fa';
 
@@ -29,6 +29,10 @@ const Navbar = () => {
             <Link to="/events" className="flex items-center px-2 ml-4">
               <FiCalendar className="mr-2 text-xl" />
               Event
+            </Link>
+            <Link to="/resume-analyzer" className="flex items-center px-2 ml-4">
+              <FiFile className="mr-2 text-xl" />
+              Resume Analysis
             </Link>
             <Link to="/tech-updated" className="flex items-center px-2 ml-4">
               <FaNewspaper className="mr-2 text-xl" />
