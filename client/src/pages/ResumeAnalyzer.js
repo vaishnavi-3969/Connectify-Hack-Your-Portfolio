@@ -54,7 +54,7 @@ const ResumeAnalyzer = () => {
       setLoading(false);
     }
   };
-  const analysis = dataBackend.replace(/[&/\\#+()$~%'":*?<>{}]/g, "");
+  const analysis = dataBackend.replace(/[&\\#+()$~%'":*?<>{}]/g, "");
   return (
     <div className="p-4 bg-gray-100 rounded-lg shadow-md">
       <h1 className="mb-4 text-2xl font-bold text-center">Resume Analyzer</h1>
