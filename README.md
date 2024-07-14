@@ -1,5 +1,8 @@
 <div align='center'>
   <img src="https://github.com/user-attachments/assets/7657b117-bb6b-4384-b1b2-8202e3210ff4" width='200px'/>
+  <h2>Tools and Technologies used</h2>
+     <img src="https://skillicons.dev/icons?i=github,git,react,tailwind,html,css,js,vscode,firebase,python"/>
+<p>
 </div>
 
 
